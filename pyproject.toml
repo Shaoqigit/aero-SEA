@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sea_engine"
+version = "1.0.0"
+description = "SEA Engine - Vibroacoustic simulation software based on Pyva"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "LGPL-2.1"}
+authors = [
+    {name = "Engineering Team"}
+]
+keywords = ["vibroacoustics", "sea", "statistical-energy-analysis", "acoustic", "noise"]
+
+dependencies = [
+    "numpy>=1.20.0",
+    "scipy>=1.7.0",
+    "matplotlib>=3.5.0",
+    "pandas>=1.4.0",
+    "pyva-toolbox @ git+https://github.com/minipief/pyva.git",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sea_engine*"]

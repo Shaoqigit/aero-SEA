@@ -1,0 +1,17 @@
+README.md
+pyproject.toml
+sea_engine/__init__.py
+sea_engine.egg-info/PKG-INFO
+sea_engine.egg-info/SOURCES.txt
+sea_engine.egg-info/dependency_links.txt
+sea_engine.egg-info/requires.txt
+sea_engine.egg-info/top_level.txt
+sea_engine/core/config.py
+sea_engine/core/engine.py
+sea_engine/gui/__init__.py
+sea_engine/gui/main_window.py
+sea_engine/models/project.py
+sea_engine/templates/__init__.py
+sea_engine/tests/__init__.py
+sea_engine/utils/__init__.py
+sea_engine/utils/export.py

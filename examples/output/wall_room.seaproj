@@ -1,0 +1,57 @@
+{
+  "metadata": {
+    "name": "Wall-Room Acoustic",
+    "description": "Example: Sound transmission through wall",
+    "author": "Engineering Team",
+    "version": "1.0.0",
+    "created": "2026-01-16T23:32:54.219757",
+    "modified": "2026-01-16T23:32:54.948332"
+  },
+  "frequency_range": {
+    "f_min": 100,
+    "f_max": 5000,
+    "band_type": "third_octave"
+  },
+  "materials": {
+    "concrete": {
+      "name": "concrete",
+      "material_type": "solid",
+      "density": 1250.0,
+      "youngs_modulus": 3800000000.0,
+      "poisson_ratio": 0.33,
+      "loss_factor": 0.03,
+      "porosity": null,
+      "flow_resistivity": null,
+      "thickness": null
+    }
+  },
+  "structures": {
+    "concrete_wall": {
+      "name": "concrete_wall",
+      "element_type": "plate",
+      "dimensions": {
+        "thickness": 0.05,
+        "Lx": 4.0,
+        "Ly": 2.5
+      },
+      "damping_loss_factor": 0.03,
+      "trim": null
+    }
+  },
+  "acoustic_spaces": {
+    "room": {
+      "name": "room",
+      "volume": null,
+      "surface_area": null,
+      "dimensions": [
+        3.0,
+        4.0,
+        2.5
+      ],
+      "absorption_area": 8.0,
+      "damping_type": [
+        "surface"
+      ]
+    }
+  }
+}
