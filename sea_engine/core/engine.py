@@ -112,7 +112,7 @@ class AcousticSpace:
     perimeter: Optional[float] = None
     dimensions: Optional[Tuple[float, float, float]] = None
     absorption_area: float = 0.0
-    damping_type: List[str] = field(default_factory=lambda: ["surface"])
+    damping_type: Optional[List[str]] = field(default_factory=lambda: ["surface"])
     system_id: Optional[int] = None
 
     def to_pyva_system(self, sys_id: int, fluid: Any) -> Any:
@@ -325,23 +325,53 @@ class SEAEngine:
                     else:
                         pyva_sys_objects.append(s)
                 
-                # Create junction - handle 2-system case only (Pyva limitation)
-                if len(pyva_sys_objects) == 2:
-                    pyva_junction = con.AreaJunction(
+                # Create junction based on type
+                if junction.junction_type == "area":
+                    # Area junction - handle 2-system case (Pyva limitation)
+                    if len(pyva_sys_objects) == 2:
+                        pyva_junction = con.AreaJunction(
+                            tuple(pyva_sys_objects),
+                            area=int(junction.area) if junction.area is not None else 1
+                        )
+                        self.model.add_junction({jname: pyva_junction})
+                    elif len(pyva_sys_objects) > 2:
+                        # For 3+ systems, create separate junctions for each pair
+                        logger.warning(f"Junction {jname} has {len(pyva_sys_objects)} systems. "
+                                     f"Pyva supports 2-system junctions. Creating pair-wise junctions.")
+                        for i in range(len(pyva_sys_objects) - 1):
+                            pair_junction = con.AreaJunction(
+                                (pyva_sys_objects[i], pyva_sys_objects[i+1]),
+                                area=int(junction.area) if junction.area is not None else 1
+                            )
+                            self.model.add_junction({f"{jname}_{i}": pair_junction})
+                
+                elif junction.junction_type == "line":
+                    # Line junction for edge couplings (beam-plate connections)
+                    # Line junctions can only couple 2 systems at a time
+                    if len(pyva_sys_objects) != 2:
+                        logger.warning(f"Line junction {jname} requires exactly 2 systems, "
+                                     f"got {len(pyva_sys_objects)}. Skipping.")
+                        continue
+                    
+                    # Default angles: perpendicular (90 degrees between plates)
+                    default_angles = (0, np.pi/2)
+                    angles = junction.angles if junction.angles else default_angles
+                    length = junction.length if junction.length else 1.0  # Default 1m
+                    
+                    pyva_junction = con.LineJunction(
                         tuple(pyva_sys_objects),
-                        area=int(junction.area) if junction.area else None
+                        length=length,
+                        thetas=angles
                     )
                     self.model.add_junction({jname: pyva_junction})
-                elif len(pyva_sys_objects) > 2:
-                    # For 3+ systems, create separate junctions for each pair
-                    logger.warning(f"Junction {jname} has {len(pyva_sys_objects)} systems. "
-                                 f"Pyva supports 2-system junctions. Creating pair-wise junctions.")
-                    for i in range(len(pyva_sys_objects) - 1):
-                        pair_junction = con.AreaJunction(
-                            (pyva_sys_objects[i], pyva_sys_objects[i+1]),
-                            area=int(junction.area) if junction.area else None
-                        )
-                        self.model.add_junction({f"{jname}_{i}": pair_junction})
+                
+                elif junction.junction_type == "semi_infinite":
+                    # Semi-infinite fluid for radiation boundary
+                    pyva_junction = con.SemiInfiniteFluid(
+                        tuple(pyva_sys_objects),
+                        fluid=junction.fluid if junction.fluid else air
+                    )
+                    self.model.add_junction({jname: pyva_junction})
 
             # Add loads
             for lname, load in self.loads.items():

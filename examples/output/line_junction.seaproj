@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "name": "Wall-Room Acoustic",
-    "description": "Example: Sound transmission through wall",
+    "name": "Line Junction Analysis",
+    "description": "Example: Wall corner with line junction coupling",
     "author": "Engineering Team",
     "version": "1.0.0",
-    "created": "2026-01-18T13:00:44.535725",
-    "modified": "2026-01-18T13:00:45.280425"
+    "created": "2026-01-17T20:49:14.041657",
+    "modified": "2026-01-17T20:49:14.797919"
   },
   "frequency_range": {
     "f_min": 100,
@@ -26,13 +26,24 @@
     }
   },
   "structures": {
-    "concrete_wall": {
-      "name": "concrete_wall",
+    "wall_horizontal": {
+      "name": "wall_horizontal",
       "element_type": "plate",
       "dimensions": {
         "thickness": 0.05,
         "Lx": 4.0,
         "Ly": 2.5
+      },
+      "damping_loss_factor": 0.03,
+      "trim": null
+    },
+    "wall_vertical": {
+      "name": "wall_vertical",
+      "element_type": "plate",
+      "dimensions": {
+        "thickness": 0.05,
+        "Lx": 2.5,
+        "Ly": 3.0
       },
       "damping_loss_factor": 0.03,
       "trim": null

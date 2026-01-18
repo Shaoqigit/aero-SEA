@@ -185,3 +185,24 @@ class FileManager:
     def validate_extension(path: Path, allowed: List[str]) -> bool:
         """Check if file has allowed extension."""
         return FileManager.get_file_extension(path) in allowed
+
+
+# Import visualization if matplotlib is available
+try:
+    from .visualization import SEAPlotter, ComparisonPlotter, quick_plot
+    VISUALIZATION_AVAILABLE = True
+except ImportError:
+    VISUALIZATION_AVAILABLE = False
+    SEAPlotter = None
+    ComparisonPlotter = None
+    quick_plot = None
+
+# Import posttreatment for result export
+try:
+    from .posttreatment import PostTreatment, ResultData, load_results
+    POSTTREATMENT_AVAILABLE = True
+except ImportError:
+    POSTTREATMENT_AVAILABLE = False
+    PostTreatment = None
+    ResultData = None
+    load_results = None
